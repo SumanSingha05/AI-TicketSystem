@@ -1,10 +1,23 @@
 import mongoose from "mongoose"
 
 const ticketSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, default: "user", enum: ["user", "moderator", "admin"] },
-    skills: [String],
+    title: String,
+    description: String,
+    status: { type: String, default: "TODO" },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId, ref:
+            "User"
+    },
+    assignedTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null
+    },
+
+    priority: String,
+    deadline: Date,
+    helpfulNotes: String,
+    relatedSkills: [String],
     createdAt: { type: Date, default: Date.now },
 });
 
