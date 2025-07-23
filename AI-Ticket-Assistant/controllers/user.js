@@ -59,3 +59,12 @@ export const login = async (req, res) => {
         });
     }
 };
+
+export const logout = async (req, res) => {
+    try {
+        req.headers = req.headers.authorization.split(" ")[1]
+        if (!token) return res.status(401)
+    } catch (error) {
+
+    }
+}
