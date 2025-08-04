@@ -1,4 +1,4 @@
-import { inngest } from "../client";
+import { inngest } from "../client.js";
 import Ticket from "../../models/ticket.js"
 import { NonRetriableError } from "inngest";
 import { sendMail } from "../../utils/mailer.js";
@@ -53,8 +53,8 @@ export const onTicketCreated = inngest.createFunction(
                         }
                     }
                 })
-                
-                if(!user){
+
+                if (!user) {
                     user = await User.findOne({
                         role: "admin"
                     })
@@ -67,21 +67,21 @@ export const onTicketCreated = inngest.createFunction(
             });
 
             await sept.run("send-email-notification", async () => {
-                if(moderator) {
+                if (moderator) {
                     const finalTicket = await Ticket.findById(ticket._id)
                     await sendMail(
                         moderator.email,
                         "Ticket Assigned"
-                        `A Ticket is assigned to you ${finalTicket.title}`
+                            `A Ticket is assigned to you ${finalTicket.title}`
                     )
                 }
             })
 
-            return {success: true}
+            return { success: true }
 
         } catch (error) {
             console.error("Error running the step", err.message)
-            return {success: false}
+            return { success: false }
         }
     }
 )
