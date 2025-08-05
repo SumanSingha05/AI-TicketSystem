@@ -1,35 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CheckAuth({ children, protectedRoute }) {
-    const navigate = useNavigate()
-    const [loading, setLoading] = useState(true)
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("token");
 
         if (protectedRoute) {
             if (!token) {
-                navigate("/login")
+                navigate("/login");
             } else {
-                setLoading(false)
+                setLoading(false);
             }
         } else {
             if (token) {
-                navigate("/")
+                navigate("/");
             } else {
-                setLoading(false)
+                setLoading(false);
             }
         }
-
-
-    }, [navigate, protectedRoute])
+    }, [navigate, protectedRoute]);
 
     if (loading) {
-        return <div>Loading...</div>
+        return <div>loading...</div>;
     }
-    return children
-
+    return children;
 }
 
 export default CheckAuth;

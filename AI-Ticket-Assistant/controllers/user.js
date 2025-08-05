@@ -4,33 +4,39 @@ import User from "../models/user.js"
 import { inngest } from "../inngest/client.js"
 
 export const signup = async (req, res) => {
-    const { email, password, skills = [] } = req.body
+    const { email, password, name, skills = [] } = req.body;
+
     try {
-        const hashed = bcrypt.hash(password, 10)
-        const user = await User.create({ email, password: hashed, skills })
+        const hashed = await bcrypt.hash(password, 10);
 
-        //Fire inngest event
+        const user = await User.create({
+            email,
+            name,
+            password: hashed,
+            skills
+        });
 
+        // Fire inngest event
         await inngest.send({
             name: "user/signup",
-            data: {
-                email
-            }
+            data: { email }
         });
 
         const token = jwt.sign(
             { _id: user._id, role: user.role },
-            process.env.JWT_SECRET);
+            process.env.JWT_SECRET
+        );
 
-        res.json({ user, token })
+        res.status(201).json({ user, token });
 
     } catch (error) {
+        console.error("Signup error:", error);
         res.status(500).json({
             error: "Signup failed",
             details: error.message
-        })
+        });
     }
-}
+};
 
 export const login = async (req, res) => {
     const { email, password } = req.body
